@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return-Aware Public Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 40px 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .demo-header h1 {
+            font-size: 28px;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .demo-header p {
+            font-size: 15px;
+            color: #666;
+        }
+
+        .forms-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .form-header {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .state-label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .form-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .form-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #2c3e50;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .info-banner {
+            background: #e8f4fd;
+            border: 1px solid #b3d9f7;
+            border-radius: 6px;
+            padding: 14px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-banner-text {
+            font-size: 14px;
+            color: #0c5a96;
+            flex: 1;
+        }
+
+        .info-banner-link {
+            font-size: 13px;
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            margin-left: 16px;
+        }
+
+        .info-banner-link:hover {
+            text-decoration: underline;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 13px 24px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .submit-button:hover {
+            background: #357abd;
+        }
+
+        .edit-mode .form-group {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group input[readonly] {
+            background: #f8f9fa;
+            cursor: default;
+        }
+
+        @media (max-width: 1024px) {
+            .forms-wrapper {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .height-indicator {
+            position: absolute;
+            right: -30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e9ecef;
+        }
+
+        .form-container {
+            position: relative;
+        }
+
+        .arrow-indicator {
+            position: absolute;
+            right: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+            color: #4a90e2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="demo-header">
+            <h1>Return-Aware Public Form</h1>
+            <p>See how the form automatically reduces after email recognition</p>
+        </div>
+
+        <div class="forms-wrapper">
+            <!-- STATE 1: Before Recognition -->
+            <div class="form-container">
+                <div class="form-header">
+                    <div class="state-label">State 1 — New User</div>
+                    <h2 class="form-title">Request Pricing Information</h2>
+                </div>
+                <div class="form-body">
+                    <div class="form-group">
+                        <label for="email1">Email</label>
+                        <input type="email" id="email1" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="name1">Name</label>
+                        <input type="text" id="name1" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone1">Phone Number</label>
+                        <input type="tel" id="phone1" placeholder="Enter your phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="company1">Company Name</label>
+                        <input type="text" id="company1" placeholder="Enter your company name">
+                    </div>
+                    <div class="form-group">
+                        <label for="budget1">Budget Range</label>
+                        <select id="budget1">
+                            <option value="">Select budget range</option>
+                            <option value="0-10k">$0 - $10,000</option>
+                            <option value="10k-50k">$10,000 - $50,000</option>
+                            <option value="50k-100k">$50,000 - $100,000</option>
+                            <option value="100k+">$100,000+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="requirements1">Requirements</label>
+                        <textarea id="requirements1" placeholder="Tell us about your requirements..."></textarea>
+                    </div>
+                    <button class="submit-button">Submit Request</button>
+                </div>
+            </div>
+
+            <!-- STATE 2: After Recognition -->
+            <div>
+                <!-- Email Card - Separate -->
+                <div class="form-container" style="margin-bottom: 20px;">
+                    <div class="form-header">
+                        <div class="state-label">State 2 — Returning User</div>
+                        <h2 class="form-title">Request Pricing Information</h2>
+                    </div>
+                    <div class="form-body" style="padding-bottom: 20px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="email2">Email</label>
+                            <input type="email" id="email2" value="john@example.com" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Form Card -->
+                <div class="form-container" id="returningUserForm">
+                    <div class="form-body">
+                        <div class="info-banner">
+                            <div class="info-banner-text">
+                                Welcome back! We've used your previously submitted details to save you time.
+                            </div>
+                            <a class="info-banner-link" id="editLink">Edit existing information</a>
+                        </div>
+
+                        <!-- Hidden fields that appear when editing -->
+                        <div id="editableFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="name2">Name</label>
+                                <input type="text" id="name2" value="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone2">Phone Number</label>
+                                <input type="tel" id="phone2" value="+91 9876543210">
+                            </div>
+                            <div class="form-group">
+                                <label for="company2">Company Name</label>
+                                <input type="text" id="company2" value="ABC Technologies">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="budget2">Budget Range</label>
+                            <select id="budget2">
+                                <option value="">Select budget range</option>
+                                <option value="0-10k">$0 - $10,000</option>
+                                <option value="10k-50k">$10,000 - $50,000</option>
+                                <option value="50k-100k">$50,000 - $100,000</option>
+                                <option value="100k+">$100,000+</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="requirements2">Requirements</label>
+                            <textarea id="requirements2" placeholder="Tell us about your requirements..."></textarea>
+                        </div>
+                        <button class="submit-button">Submit Request</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const editLink = document.getElementById('editLink');
+        const editableFields = document.getElementById('editableFields');
+        const returningUserForm = document.getElementById('returningUserForm');
+
+        editLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (editableFields.style.display === 'none') {
+                editableFields.style.display = 'block';
+                returningUserForm.classList.add('edit-mode');
+                editLink.textContent = 'Hide existing information';
+            } else {
+                editableFields.style.display = 'none';
+                returningUserForm.classList.remove('edit-mode');
+                editLink.textContent = 'Edit existing information';
+            }
+        });
+    </script>
+</body>
+</html>
