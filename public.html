@@ -23,6 +23,32 @@
             margin: 0 auto;
         }
 
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            color: #4a90e2;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #d1d5db;
+            transition: all 0.2s;
+            margin-bottom: 30px;
+        }
+
+        .back-button:hover {
+            background: #f8f9fa;
+            border-color: #4a90e2;
+        }
+
+        .back-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .demo-header {
             text-align: center;
             margin-bottom: 50px;
@@ -219,6 +245,13 @@
 </head>
 <body>
     <div class="container">
+        <a href="#" class="back-button">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Landing Page
+        </a>
+
         <div class="demo-header">
             <h1>Return-Aware Public Form</h1>
             <p>See how the form automatically reduces after email recognition</p>
