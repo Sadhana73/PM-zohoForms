@@ -19,6 +19,33 @@
             line-height: 1.6;
         }
 
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            color: #3b82f6;
+            text-decoration: none;
+            border-radius: 7px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #d1d5db;
+            transition: all 0.2s;
+            margin-bottom: 30px;
+        }
+
+        .back-button:hover {
+            background: #f9fafb;
+            border-color: #3b82f6;
+            transform: translateX(-2px);
+        }
+
+        .back-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -240,6 +267,13 @@
 </head>
 <body>
     <div class="container">
+        <a href="https://sadhana73.github.io/PM-zohoForms/" class="back-button">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to Landing Page
+        </a>
+
         <div class="header">
             <h1>Return-Aware Form Feature</h1>
             <p>Intelligent forms that recognize returning users and reduce repeated data entry</p>
