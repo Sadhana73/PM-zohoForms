@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return-Aware Form - Enterprise Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #2c3e50;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #64748b;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .form-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+        }
+
+        .state-label {
+            display: inline-block;
+            background: #e2e8f0;
+            color: #475569;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 30px;
+        }
+
+        .info-banner {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-banner-text {
+            color: #1e40af;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .edit-link {
+            color: #3b82f6;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .edit-link:hover {
+            text-decoration: underline;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 15px;
+            color: #1f2937;
+            background: white;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 14px 24px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .submit-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        .field-removed {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            margin: 0;
+            transition: all 0.3s ease;
+        }
+
+        .field-visible {
+            opacity: 1;
+            max-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .prefilled-value {
+            background: #f9fafb;
+            color: #6b7280;
+        }
+
+        /* Third state - full width */
+        .edit-mode-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .section-divider {
+            margin: 50px 0;
+            border: none;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Return-Aware Form Feature</h1>
+            <p>Intelligent forms that recognize returning users and reduce repeated data entry</p>
+        </div>
+
+        <!-- First Two States: Side-by-Side Comparison -->
+        <div class="demo-grid">
+            <!-- STATE 1: First-Time User -->
+            <div class="form-wrapper">
+                <span class="state-label">State 1: First-Time User</span>
+                <h2 class="form-title">Request Pricing Information</h2>
+                
+                <form>
+                    <div class="form-group">
+                        <label for="name1">Name</label>
+                        <input type="text" id="name1" placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email1">Email</label>
+                        <input type="email" id="email1" placeholder="your.email@company.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone1">Phone Number</label>
+                        <input type="tel" id="phone1" placeholder="+1 (555) 000-0000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company1">Company Name</label>
+                        <input type="text" id="company1" placeholder="Your company name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget1">Budget Range</label>
+                        <select id="budget1">
+                            <option value="">Select your budget range</option>
+                            <option value="0-10k">$0 - $10,000</option>
+                            <option value="10k-50k">$10,000 - $50,000</option>
+                            <option value="50k-100k">$50,000 - $100,000</option>
+                            <option value="100k+">$100,000+</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="requirements1">Requirements</label>
+                        <textarea id="requirements1" placeholder="Tell us about your specific needs and requirements..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-button">Submit Request</button>
+                </form>
+            </div>
+
+            <!-- STATE 2: Returning User -->
+            <div class="form-wrapper">
+                <span class="state-label">State 2: Returning User</span>
+                <h2 class="form-title">Request Pricing Information</h2>
+                
+                <div class="info-banner">
+                    <div class="info-banner-text">
+                        <span class="info-icon">i</span>
+                        <span>Welcome back! We've used your previously submitted details to save you time.</span>
+                    </div>
+                    <a href="#" class="edit-link" onclick="showEditMode(event)">Edit existing information</a>
+                </div>
+
+                <form>
+                    <!-- These fields are completely removed for returning users -->
+                    
+                    <div class="form-group">
+                        <label for="budget2">Budget Range</label>
+                        <select id="budget2">
+                            <option value="">Select your budget range</option>
+                            <option value="0-10k">$0 - $10,000</option>
+                            <option value="10k-50k">$10,000 - $50,000</option>
+                            <option value="50k-100k">$50,000 - $100,000</option>
+                            <option value="100k+">$100,000+</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="requirements2">Requirements</label>
+                        <textarea id="requirements2" placeholder="Tell us about your specific needs and requirements..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-button">Submit Request</button>
+                </form>
+            </div>
+        </div>
+
+        <hr class="section-divider">
+
+        <!-- STATE 3: Edit Mode (Optional) -->
+        <div class="edit-mode-wrapper">
+            <h3 class="section-title">State 3: Edit Mode (When "Edit existing information" is clicked)</h3>
+            
+            <div class="form-wrapper">
+                <span class="state-label">State 3: Edit Mode</span>
+                <h2 class="form-title">Request Pricing Information</h2>
+                
+                <div class="info-banner">
+                    <div class="info-banner-text">
+                        <span class="info-icon">i</span>
+                        <span>You can update your information below. Changes will be saved for future submissions.</span>
+                    </div>
+                </div>
+
+                <form id="editForm">
+                    <div class="form-group field-visible" id="nameField">
+                        <label for="name3">Name</label>
+                        <input type="text" id="name3" value="John Doe" class="prefilled-value">
+                    </div>
+
+                    <div class="form-group field-visible" id="phoneField">
+                        <label for="phone3">Phone Number</label>
+                        <input type="tel" id="phone3" value="+91 9876543210" class="prefilled-value">
+                    </div>
+
+                    <div class="form-group field-visible" id="companyField">
+                        <label for="company3">Company Name</label>
+                        <input type="text" id="company3" value="ABC Technologies" class="prefilled-value">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="budget3">Budget Range</label>
+                        <select id="budget3">
+                            <option value="">Select your budget range</option>
+                            <option value="0-10k">$0 - $10,000</option>
+                            <option value="10k-50k">$10,000 - $50,000</option>
+                            <option value="50k-100k" selected>$50,000 - $100,000</option>
+                            <option value="100k+">$100,000+</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="requirements3">Requirements</label>
+                        <textarea id="requirements3" placeholder="Tell us about your specific needs and requirements..."></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-button">Submit Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showEditMode(event) {
+            event.preventDefault();
+            // Smooth scroll to edit mode section
+            document.querySelector('.edit-mode-wrapper').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+            
+            // Add a subtle highlight effect
+            const editWrapper = document.querySelector('.edit-mode-wrapper .form-wrapper');
+            editWrapper.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.3)';
+            setTimeout(() => {
+                editWrapper.style.transition = 'box-shadow 0.5s ease';
+                editWrapper.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.08)';
+            }, 1000);
+        }
+
+        // Remove prefilled styling on focus
+        document.querySelectorAll('.prefilled-value').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.classList.remove('prefilled-value');
+            });
+        });
+    </script>
+</body>
+</html>
